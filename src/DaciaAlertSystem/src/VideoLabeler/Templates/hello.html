@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+
+<body>
+  <header>
+    <div class="row">
+      <div class="col s12">
+        <h1>Vid Lableler</h1>
+      </div>
+    </div>
+  </header>
+  <main>
+    <div class="row">
+      <div class="input-field col s6">
+        <button onclick="addTime()">+</button>
+      </div>
+      <form class="col s12 active" method="post" action="/submit">
+        <input id="vidfilepath" name="vidfilepath" type="text">
+        <label for="vidfilepath">File Path (fully qualified)</label>
+        <div class="row" id="form">
+          <div class="input-field col s6">
+            <input id="starttime0" name="starttime0" type="number">
+            <label for="starttime0">Start Time</label>
+          </div>
+          <input name="endtime0" type="number">
+        </div>
+        <button type="submit">Label</button>
+      </form>
+      <input type="hidden" value=0 id="numvals">
+  </main>
+  </div>
+  <footer>
+
+  </footer>
+</body>
+<!-- Compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+<style src="style.css"></style>
+<script>
+  function addTime() {
+    console.log("adding time entries")
+    var maxnum = document.getElementById("numvals").value
+    maxnum++
+    document.getElementById("numvals").value = maxnum
+    var div = document.createElement("div")
+    var starttimeinput = document.createElement("input")
+    starttimeinput.type = "number"
+    starttimeinput.name = "starttime" + maxnum
+    var endtimeinput = document.createElement("input")
+    endtimeinput.type = "number"
+    endtimeinput.name = "endtime" + maxnum
+    div.appendChild(starttimeinput)
+    div.appendChild(endtimeinput)
+    document.getElementById("form").appendChild(div)
+  }
+</script>
+
+</html>
