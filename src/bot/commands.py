@@ -13,6 +13,7 @@ from functions import channel
 from functions import weather
 from functions import giphy
 from functions import minecraft
+from functions import dota
 
 #function to call when there are no arguments found
 def no_command_found():
@@ -25,6 +26,7 @@ commands = {
     ,'weather' :weather.parse_args
     ,'gif': giphy.get_gifs
     ,'minecraft':minecraft.server_status
+    ,'dota':dota.get_match
 }
 
 #function to print commands when someone needs help
@@ -40,7 +42,6 @@ commands['help'] = help_watbot
 #parses the arguments and then return the function called with the passed arguments
 async def parse_arguments_and_return(message,client):
     message_components = re.sub("[!]",'',message).split(' ')
-    #print(message_components)
     try:
         dict_function_ref = commands[message_components[0]]
         if len(message_components)>=1:
