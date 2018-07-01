@@ -5,6 +5,8 @@ import asyncio
 import MySQLdb
 import re
 import datetime
+import sys
+import logging
 
 with open("../bot/connections.json",'r') as file:
     connections =  json.loads(file.read())
@@ -80,17 +82,30 @@ def clean(data):
     
 
 async def data_getter(loop):
+    #_________SETUP LOGGING_________
+    logger = logging.getLogger('minute_data')
+    logger.setLevel(logging.DEBUG)
+    #generate filename
+    log_filename='logs/discord{}.log'.format(datetime.datetime.now().strftime("%Y%m%d_%H%M%S%f"))
+    handler = logging.FileHandler(filename=log_filename, encoding='utf-8', mode='w')
+    handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+    logger.addHandler(handler)
+    #_________END  LOGGING_________
     while 1==1:
-        reader, writer = await asyncio.open_connection(host=connections['internal_ip'],port=connections['external_port'],loop=loop)
-        message = {'function':'minute_data'} 
-        data = pickle.dumps(message)
-        writer.write(data)
-        data = await reader.read()
-        message = pickle.loads(data)
-        writer.close()
-        write_to_db(message)
-
-        await asyncio.sleep(60)
+        try:
+            reader, writer = await asyncio.open_connection(host=connections['external_ip'],port=connections['external_port'],loop=loop)
+            message = {'function':'minute_data'} 
+            data = pickle.dumps(message)
+            writer.write(data)
+            data = await reader.read()
+            message = pickle.loads(data)
+            print(message)
+            writer.close()
+            write_to_db(message)
+        except:
+            logger.debug([er for er in sys.exc_info()])
+        finally:
+            await asyncio.sleep(60)
     
 
 loop = asyncio.get_event_loop()
