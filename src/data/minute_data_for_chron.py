@@ -92,21 +92,18 @@ async def data_getter(loop):
     handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
     logger.addHandler(handler)
     #_________END  LOGGING_________
-    while 1==1:
-        try:
-            reader, writer = await asyncio.open_connection(host=connections['external_ip'],port=connections['external_port'],loop=loop)
-            message = {'function':'minute_data'} 
-            data = pickle.dumps(message)
-            writer.write(data)
-            data = await reader.read()
-            message = pickle.loads(data)
-            print(message)
-            writer.close()
-            write_to_db(message)
-        except:
-            logger.debug([er for er in sys.exc_info()])
-        finally:
-            await asyncio.sleep(60)
+    try:
+        reader, writer = await asyncio.open_connection(host=connections['external_ip'],port=connections['external_port'],loop=loop)
+        message = {'function':'minute_data'} 
+        data = pickle.dumps(message)
+        writer.write(data)
+        data = await reader.read()
+        message = pickle.loads(data)
+        print(message)
+        writer.close()
+        write_to_db(message)
+    except:
+        logger.debug([er for er in sys.exc_info()])
     
 
 loop = asyncio.get_event_loop()
